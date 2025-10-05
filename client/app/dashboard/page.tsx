@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { AnxietyGames } from "@/components/games/anxiety-games";
+import { MoodForm } from "@/components/mood/mood-form";
 import {
     Card,
     CardContent,
@@ -46,11 +47,15 @@ import {
   startOfDay,
   isWithinInterval,
 } from "date-fns";
+import { ActivityLogger } from "@/components/activities/activity-logger";
 
 
 export default function DashboardPage() {
     const [currentTime, setCurrentTime] = useState(new Date());
     const [showMoodModal, setShowMoodModal] = useState(false);
+    const [isSavingMood, setIsSavingMood]=useState(false);
+    const [showActivityLogger, setShowActivityLogger]=useState(false);
+    const router = useRouter();
     useEffect(() => {
         const timer = setInterval(() =>
         setCurrentTime(new Date()), 1000);
@@ -91,6 +96,23 @@ export default function DashboardPage() {
         description: "Planned for today",
         },
     ];
+
+    const handleMoodSubmit = async (data:{moodScore:number})=>{
+        setIsSavingMood(true);
+        try{
+            setShowMoodModal(true);
+        }catch(error){
+            console.error("error saving mood", error);
+        }finally{
+            setIsSavingMood(false);
+        }
+    }
+    const handleAICheckIn=()=>{
+        setShowActivityLogger(true);
+    };
+    const handleStartTherapy = ()=>{
+        router.push("/therapy/new");
+    }
     // const handleGamePlayed = useCallback(
     //     async (gameName: string, description: string) => {
     //     try {
@@ -156,6 +178,7 @@ export default function DashboardPage() {
                             "bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90",
                             "transition-all duration-200 group-hover:translate-y-[-2px]"
                         )}
+                        onClick={handleStartTherapy}
                         >
                         <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
@@ -183,6 +206,7 @@ export default function DashboardPage() {
                             "justify-center items-center text-center",
                             "transition-all duration-200 group-hover:translate-y-[-2px]"
                             )}
+                            onClick={setShowMoodModal}
                         >
                             <div className="w-10 h-10 rounded-full bg-rose-500/10 flex items-center justify-center mb-2">
                             <Heart className="w-5 h-5 text-rose-500" />
@@ -202,6 +226,7 @@ export default function DashboardPage() {
                             "justify-center items-center text-center",
                             "transition-all duration-200 group-hover:translate-y-[-2px]"
                             )}
+                            onClick={handleAICheckIn}
                         >
                             <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center mb-2">
                             <BrainCircuit className="w-5 h-5 text-blue-500" />
@@ -275,7 +300,8 @@ export default function DashboardPage() {
             </div>
             </div>
         </Container>
-            <Dialog open={showMoodModal} onOpenChange={setShowMoodModal}>
+
+        <Dialog open={showMoodModal} onOpenChange={setShowMoodModal}>
             <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
                 <DialogTitle>How are you feeling?</DialogTitle>
@@ -283,10 +309,12 @@ export default function DashboardPage() {
                 Move the slider to track your current mood
                 </DialogDescription>
             </DialogHeader>
+            <MoodForm onSubmit={handleMoodSubmit} isLoading={isSavingMood}/>
             </DialogContent>
         </Dialog>
+        <ActivityLogger >
 
-
+        </ActivityLogger>
         </div>
     )
 }
