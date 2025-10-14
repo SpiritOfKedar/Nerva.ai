@@ -10,14 +10,9 @@ export interface IChatMessage extends Document{
     }
 }
 
-export interface IChatSession extends Document{
-    sessionId:string;
-    messages:IChatMessage[];
-    createdAt:Date;
-    updatedAt:Date;
-}
 
-const chatMessageSchema = new Schema<IChatMessage>(
+
+export const chatMessageSchema = new Schema<IChatMessage>(
     {
         role:{type:String,enum:["user","assistant"],required:true},
         content:{type:String,required:true},
@@ -30,4 +25,5 @@ const chatMessageSchema = new Schema<IChatMessage>(
     },
     {timestamps:true}
 );
+
 export const ChatMessage = mongoose.model<IChatMessage>("ChatMessage",chatMessageSchema); 
