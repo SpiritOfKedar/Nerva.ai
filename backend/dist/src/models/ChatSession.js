@@ -33,16 +33,11 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ChatMessage = exports.chatMessageSchema = void 0;
+exports.ChatSession = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-exports.chatMessageSchema = new mongoose_1.Schema({
-    role: { type: String, enum: ["user", "assistant"], required: true },
-    content: { type: String, required: true },
-    timestamp: { type: Date, default: Date.now, required: true },
-    metadata: {
-        technique: { type: String },
-        goal: { type: String },
-        progress: [mongoose_1.Schema.Types.Mixed],
-    },
+const chat_1 = require("./chat");
+const chatSessionSchema = new mongoose_1.Schema({
+    sessionId: { type: String, required: true, unique: true },
+    messages: [chat_1.chatMessageSchema],
 }, { timestamps: true });
-exports.ChatMessage = mongoose_1.default.model("ChatMessage", exports.chatMessageSchema);
+exports.ChatSession = mongoose_1.default.model("ChatSession", chatSessionSchema);

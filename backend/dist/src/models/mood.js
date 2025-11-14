@@ -33,16 +33,13 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ChatMessage = exports.chatMessageSchema = void 0;
+exports.Mood = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-exports.chatMessageSchema = new mongoose_1.Schema({
-    role: { type: String, enum: ["user", "assistant"], required: true },
-    content: { type: String, required: true },
+const moodSchema = new mongoose_1.Schema({
+    userId: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true, index: true },
+    score: { type: Number, min: 0, max: 100, required: true },
+    note: { type: String, trim: true },
     timestamp: { type: Date, default: Date.now, required: true },
-    metadata: {
-        technique: { type: String },
-        goal: { type: String },
-        progress: [mongoose_1.Schema.Types.Mixed],
-    },
 }, { timestamps: true });
-exports.ChatMessage = mongoose_1.default.model("ChatMessage", exports.chatMessageSchema);
+moodSchema.index({ userId: 1, timestamp: -1 });
+exports.Mood = mongoose_1.default.model("Mood", moodSchema);
