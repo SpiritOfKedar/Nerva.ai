@@ -23,9 +23,9 @@ const parseGeminiJSON = (text: string): any => {
   }
 };
 
-// Helper function to get Gemini model (using gemini-1.5-flash as it's more widely available)
+// Helper function to get Gemini model (using gemini-pro as it's more widely available)
 const getGeminiModel = () => {
-  return genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  return genAI.getGenerativeModel({ model: "gemini-pro" });
 };
 
 // Function to handle chat message processing

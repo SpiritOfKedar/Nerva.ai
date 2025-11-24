@@ -22,15 +22,15 @@ const staticChatHistory = [
         id: "3",
         userId: "user1",
         message:
-        "I understand presentations can be stressful. Would you like to try a quick breathing exercise together?",
+            "I understand presentations can be stressful. Would you like to try a quick breathing exercise together?",
         role: "assistant",
         timestamp: new Date(Date.now() - 1000 * 60 * 3),
         sentiment: "neutral",
         context: null,
     },
-    ];
+];
 
-    const staticSessions = [
+const staticSessions = [
     {
         id: "1",
         userId: "user1",
@@ -49,9 +49,9 @@ const staticChatHistory = [
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 12),
         updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 12),
     },
-    ];
+];
 
-    const staticActivities = [
+const staticActivities = [
     {
         id: "1",
         userId: "user1",
@@ -80,18 +80,21 @@ const staticChatHistory = [
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 1),
         updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 1),
     },
-    ];
+];
 
-    export const getSessionChatHistory = async (sessionId: string) => {
+export const getSessionChatHistory = async (sessionId: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const _sessionId = sessionId;
     return staticChatHistory;
-    };
+};
 
-    export const saveChatMessage = async (data: {
+export const saveChatMessage = async (data: {
     userId: string;
     message: string;
     role: "user" | "assistant";
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     context?: any;
-    }) => {
+}) => {
     const newMessage = {
         id: Math.random().toString(36).substr(2, 9),
         userId: data.userId,
@@ -103,28 +106,28 @@ const staticChatHistory = [
     };
     staticChatHistory.push(newMessage);
     return newMessage;
-    };
+};
 
-    export const updateSessionStatus = async (
+export const updateSessionStatus = async (
     sessionId: string,
     status: string
-    ) => {
+) => {
     const session = staticSessions.find((s) => s.id === sessionId);
     if (session) {
         session.status = status;
         session.updatedAt = new Date();
     }
     return session;
-    };
+};
 
-    export const updateTherapySession = async (
+export const updateTherapySession = async (
     sessionId: string,
     data: {
         status?: string;
         summary?: string;
         title?: string;
     }
-    ) => {
+) => {
     const session = staticSessions.find((s) => s.id === sessionId);
     if (session) {
         if (data.status) session.status = data.status;
@@ -133,49 +136,51 @@ const staticChatHistory = [
         session.updatedAt = new Date();
     }
     return session;
-    };
+};
 
-    export const getTodaysActivities = async (userId: string) => {
+export const getTodaysActivities = async (userId: string) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return staticActivities.filter(
         (activity) =>
-        activity.userId === userId &&
-        activity.timestamp >= today &&
-        activity.timestamp < new Date(today.getTime() + 24 * 60 * 60 * 1000)
+            activity.userId === userId &&
+            activity.timestamp >= today &&
+            activity.timestamp < new Date(today.getTime() + 24 * 60 * 60 * 1000)
     );
-    };
+};
 
-    export const updateActivityStatus = async (
+export const updateActivityStatus = async (
     activityId: string,
     completed: boolean
-    ) => {
+) => {
     const activity = staticActivities.find((a) => a.id === activityId);
     if (activity) {
         activity.completed = completed;
         activity.updatedAt = new Date();
     }
     return activity;
-    };
+};
 
-    export const getLatestHealthMetrics = async (userId: string) => {
+export const getLatestHealthMetrics = async (userId: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const _userId = userId;
     return {
         heartRate: 72,
         steps: 5432,
         sleepHours: 7.5,
         stressLevel: "low",
     };
-    };
+};
 
-    export const getUserActivities = async (userId: string) => {
+export const getUserActivities = async (userId: string) => {
     return staticActivities.filter((activity) => activity.userId === userId);
-    };
+};
 
-    export const saveMoodData = async (data: {
+export const saveMoodData = async (data: {
     userId: string;
     mood: number;
     note?: string;
-    }) => {
+}) => {
     const newActivity = {
         id: Math.random().toString(36).substr(2, 9),
         userId: data.userId,
@@ -192,15 +197,15 @@ const staticChatHistory = [
     };
     staticActivities.push(newActivity);
     return newActivity;
-    };
+};
 
-    export const logActivity = async (data: {
+export const logActivity = async (data: {
     userId: string;
     type: string;
     name: string;
     description?: string;
     duration?: number;
-    }) => {
+}) => {
     const newActivity = {
         id: Math.random().toString(36).substr(2, 9),
         userId: data.userId,

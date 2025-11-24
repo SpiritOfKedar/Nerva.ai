@@ -78,6 +78,7 @@ export default {
       },
       animation: {
         ripple: "ripple var(--duration,2s) ease calc(var(--i, 0)*.2s) infinite",
+        "pulse-gentle": "pulse-gentle 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
       keyframes: {
         ripple: {
@@ -87,6 +88,10 @@ export default {
           "50%": {
             transform: "translate(-50%, -50%) scale(0.9)",
           },
+        },
+        "pulse-gentle": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.6" },
         },
       },
     },
