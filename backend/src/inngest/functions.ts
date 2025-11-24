@@ -1,4 +1,9 @@
-import {inngest} from "./index";
+import { inngest } from "./index";
+import {
+  processChatMessage,
+  analyzeTherapySession,
+  generateActivityRecommendations
+} from "./aiFunctions";
 
 const helloWorld = inngest.createFunction(
   { id: "hello-world" },
@@ -11,5 +16,8 @@ const helloWorld = inngest.createFunction(
 
 // Add the function to the exported array:
 export const functions = [
-  helloWorld
+  helloWorld,
+  processChatMessage,
+  analyzeTherapySession,
+  generateActivityRecommendations,
 ];
