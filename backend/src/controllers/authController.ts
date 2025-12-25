@@ -6,18 +6,54 @@ import jwt from "jsonwebtoken";
 import { logger } from "../utils/logger";
 import dotenv from "dotenv";
 dotenv.config();
+
+// Email validation regex
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Password validation: 8+ chars, uppercase, lowercase, number
+const validatePassword = (password: string): { valid: boolean; message: string } => {
+    if (password.length < 8) {
+        return { valid: false, message: "Password must be at least 8 characters long" };
+    }
+    if (!/[A-Z]/.test(password)) {
+        return { valid: false, message: "Password must contain at least one uppercase letter" };
+    }
+    if (!/[a-z]/.test(password)) {
+        return { valid: false, message: "Password must contain at least one lowercase letter" };
+    }
+    if (!/[0-9]/.test(password)) {
+        return { valid: false, message: "Password must contain at least one number" };
+    }
+    return { valid: true, message: "" };
+};
 export const register = async (req: Request, res: Response) => {
     try {
         const { email, name, password } = req.body;
         if (!email || !password || !name) {
-            return res.status(400).json({ message: "all fields are required" });
+            return res.status(400).json({ message: "All fields are required" });
         }
-        const existingUser = await User.findOne({ email });
+
+        // Validate email format
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ message: "Invalid email format" });
+        }
+
+        // Validate password strength
+        const passwordValidation = validatePassword(password);
+        if (!passwordValidation.valid) {
+            return res.status(400).json({ message: passwordValidation.message });
+        }
+
+        const existingUser = await User.findOne({ email: email.toLowerCase().trim() });
         if (existingUser) {
             return res.status(409).json({ message: "User already exist" });
         }
-        const hasehdPassword = await bcrypt.hash(password, 10);
-        const user = new User({ name, email, password: hasehdPassword });
+        const hashedPassword = await bcrypt.hash(password, 12);
+        const user = new User({
+            name: name.trim(),
+            email: email.toLowerCase().trim(),
+            password: hashedPassword
+        });
         await user.save();
         res.status(201).json({
             user: {
@@ -83,7 +119,7 @@ export const login = async (req: Request, res: Response) => {
 }
 export const logout = async (req: Request, res: Response) => {
     try {
-        const token = req.header("Authorization")?.replace("Bearer", "");
+        const token = req.header("Authorization")?.replace("Bearer ", "");
         if (token) {
             await Session.findOneAndDelete({ token });
         }

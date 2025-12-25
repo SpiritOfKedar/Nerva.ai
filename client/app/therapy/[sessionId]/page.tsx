@@ -1,13 +1,15 @@
 'use client'
 
 import { useEffect, useRef, useState } from "react"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Send, Bot, User, Loader2, Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence, animate } from "framer-motion"
 import ReactMarkdown from "react-markdown"
 import { Badge } from "@/components/ui/badge"
+import { useSession } from "@/lib/contexts/session-context"
+
 const glowAnimation = {
     initial: { opacity: 0.5, scale: 1 },
     animate: {
@@ -30,6 +32,7 @@ const SUGGESTED_QUESTIONS = [
 
 export default function TherapyPage() {
     const params = useParams()
+    const router = useRouter()
     const sessionId = params.sessionId as string
     const [message, setMessage] = useState("")
     const [isTyping, setIsTyping] = useState(false)
@@ -37,6 +40,14 @@ export default function TherapyPage() {
     const [isLoading, setIsLoading] = useState(false)
     const [mounted, setMounted] = useState(false)
     const [isChatPaused, setIsChatPaused] = useState(false)
+    const { loading, isAuthenticated } = useSession()
+
+    // Auth guard - redirect to login if not authenticated
+    useEffect(() => {
+        if (!loading && !isAuthenticated) {
+            router.push("/login")
+        }
+    }, [loading, isAuthenticated, router])
 
     useEffect(() => {
         setMounted(true)
@@ -73,10 +84,12 @@ export default function TherapyPage() {
         setIsTyping(true)
 
         try {
+            const token = localStorage.getItem("token");
             const response = await fetch(`/api/chat/sessions/${sessionId}/messages`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    ...(token && { "Authorization": `Bearer ${token}` }),
                 },
                 body: JSON.stringify({ message: userMessage.content }),
             })

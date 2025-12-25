@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const BACKEND_API_URL =
     process.env.BACKEND_API_URL ||
-    "https://ai-therapist-agent-backend.onrender.com";
+    "http://localhost:3001";
 
 export async function GET(
     req: NextRequest,
@@ -10,6 +10,15 @@ export async function GET(
 ) {
     try {
         const { sessionId } = await params;
+        const authHeader = req.headers.get("Authorization");
+
+        if (!authHeader) {
+            return NextResponse.json(
+                { error: "Authorization required" },
+                { status: 401 }
+            );
+        }
+
         console.log(`Getting chat history for session ${sessionId}`);
 
         const response = await fetch(
@@ -18,6 +27,7 @@ export async function GET(
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": authHeader,
                 },
             }
         );
@@ -32,14 +42,14 @@ export async function GET(
         }
 
         const data = await response.json();
-        console.log("Chat history retrieved successfully:", data);
 
         // Format the response to match the frontend's expected format
-        const formattedMessages = data.map((msg: any) => ({
+        const formattedMessages = Array.isArray(data) ? data.map((msg: any) => ({
             role: msg.role,
             content: msg.content,
             timestamp: msg.timestamp,
-        }));
+            metadata: msg.metadata,
+        })) : [];
 
         return NextResponse.json(formattedMessages);
     } catch (error) {

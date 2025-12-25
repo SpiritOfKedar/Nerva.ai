@@ -267,7 +267,14 @@ export default function Dashboard() {
     const [mounted, setMounted] = useState(false);
     const [currentTime, setCurrentTime] = useState(new Date());
     const router = useRouter();
-    const { user } = useSession();
+    const { user, loading, isAuthenticated } = useSession();
+
+    // Auth guard - redirect to login if not authenticated
+    useEffect(() => {
+        if (!loading && !isAuthenticated) {
+            router.push("/login");
+        }
+    }, [loading, isAuthenticated, router]);
 
     // Rename the state variable
     const [insights, setInsights] = useState<
@@ -497,8 +504,17 @@ export default function Dashboard() {
         [loadActivities]
     );
 
-    // Simple loading state
-    if (!mounted) {
+    // Simple loading state - also wait for auth check
+    if (!mounted || loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+            </div>
+        );
+    }
+
+    // Don't render if not authenticated (redirect will happen)
+    if (!isAuthenticated) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />

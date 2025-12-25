@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const BACKEND_API_URL =
     process.env.BACKEND_API_URL ||
-    "https://ai-therapist-agent-backend.onrender.com";
+    "http://localhost:3001";
 
 export async function POST(
     req: NextRequest,
@@ -12,6 +12,7 @@ export async function POST(
         const { sessionId } = await params;
         const body = await req.json();
         const { message } = body;
+        const authHeader = req.headers.get("Authorization");
 
         if (!message) {
             return NextResponse.json(
@@ -20,13 +21,21 @@ export async function POST(
             );
         }
 
-        console.log(`Sending message to session ${sessionId}:`, message);
+        if (!authHeader) {
+            return NextResponse.json(
+                { error: "Authorization required" },
+                { status: 401 }
+            );
+        }
+
+        console.log(`Sending message to session ${sessionId}`);
         const response = await fetch(
             `${BACKEND_API_URL}/chat/sessions/${sessionId}/messages`,
             {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": authHeader,
                 },
                 body: JSON.stringify({ message }),
             }
@@ -42,7 +51,7 @@ export async function POST(
         }
 
         const data = await response.json();
-        console.log("Message sent successfully:", data);
+        console.log("Message sent successfully");
         return NextResponse.json(data);
     } catch (error) {
         console.error("Error sending message:", error);
