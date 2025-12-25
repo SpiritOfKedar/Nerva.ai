@@ -38,8 +38,10 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
+          // Use the Next.js API route as proxy - it has the correct backend URL
+          const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3002";
           const response = await fetch(
-            `${process.env.BACKEND_URL}/api/auth/login`,
+            `${baseUrl}/api/auth/login`,
             {
               method: "POST",
               headers: {

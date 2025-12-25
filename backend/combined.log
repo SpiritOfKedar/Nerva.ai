@@ -202,3 +202,4 @@
 {"level":"info","message":"connected to mongodb atlas","timestamp":"2025-12-25T08:14:44.862Z"}
 {"level":"info","message":"Server is running on PORT 3001","timestamp":"2025-12-25T08:14:44.866Z"}
 {"level":"info","message":"inngest endpoint available at http://localhost:3001/api/inngest","timestamp":"2025-12-25T08:14:44.866Z"}
+{"level":"info","message":"connected to mongodb atlas","timestamp":"2025-12-25T08:45:12.062Z"}
