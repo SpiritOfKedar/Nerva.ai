@@ -1,19 +1,15 @@
 import rateLimit from "express-rate-limit";
-import { Request } from "express";
 
 // Rate limiter for authentication endpoints (stricter)
 export const authRateLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // 5 requests per window per IP
+    max: 20, // 20 requests per window per IP (increased for development)
     message: {
         error: "Too many authentication attempts. Please try again in 15 minutes.",
         retryAfter: 15 * 60,
     },
     standardHeaders: true,
     legacyHeaders: false,
-    keyGenerator: (req: Request) => {
-        return req.ip || req.socket.remoteAddress || "unknown";
-    },
 });
 
 // Rate limiter for chat endpoints (moderate)
@@ -26,10 +22,6 @@ export const chatRateLimiter = rateLimit({
     },
     standardHeaders: true,
     legacyHeaders: false,
-    keyGenerator: (req: Request) => {
-        // Use user ID if authenticated, otherwise fall back to IP
-        return (req as any).user?._id?.toString() || req.ip || req.socket.remoteAddress || "unknown";
-    },
 });
 
 // General API rate limiter
