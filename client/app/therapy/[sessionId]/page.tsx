@@ -100,7 +100,6 @@ export default function TherapyPage() {
 
             const data = await response.json()
 
-            // Add AI response to messages
             if (data.aiMessage) {
                 setMessages(prev => [...prev, {
                     ...data.aiMessage,
@@ -120,8 +119,51 @@ export default function TherapyPage() {
         }
     }
 
-    const handleSuggestedQuestion = (text: string) => {
-        setMessage(text)
+    const handleSuggestedQuestion = async (text: string) => {
+        if (isTyping || isChatPaused) return
+
+        const userMessage = {
+            role: "user",
+            content: text,
+            timestamp: new Date(),
+        }
+
+        setMessages(prev => [...prev, userMessage])
+        setIsTyping(true)
+
+        try {
+            const token = localStorage.getItem("token");
+            const response = await fetch(`/api/chat/sessions/${sessionId}/messages`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(token && { "Authorization": `Bearer ${token}` }),
+                },
+                body: JSON.stringify({ message: text }),
+            })
+
+            if (!response.ok) {
+                throw new Error("Failed to send message")
+            }
+
+            const data = await response.json()
+
+            if (data.aiMessage) {
+                setMessages(prev => [...prev, {
+                    ...data.aiMessage,
+                    timestamp: new Date(data.aiMessage.timestamp),
+                }])
+            }
+        } catch (error) {
+            console.error("Error sending message:", error)
+            setMessages(prev => [...prev, {
+                role: "assistant",
+                content: "I'm sorry, I'm having trouble responding right now. Please try again.",
+                timestamp: new Date(),
+            }])
+        } finally {
+            setIsTyping(false)
+        }
     }
 
     useEffect(() => {
@@ -194,9 +236,15 @@ export default function TherapyPage() {
                                             transition={{ delay: index * 0.1 + 0.5 }}
                                         >
                                             <Button
+                                                type="button"
                                                 variant="outline"
-                                                className="w-full h-auto py-4 px-6 text-left justify-start hover:bg-muted/50 hover:border-primary/50 transition-all duration-300"
-                                                onClick={() => handleSuggestedQuestion(q.text)}
+                                                className="w-full h-auto py-4 px-6 text-left justify-start hover:bg-muted/50 hover:border-primary/50 transition-all duration-300 relative z-10"
+                                                onClick={(e) => {
+                                                    e.preventDefault()
+                                                    e.stopPropagation()
+                                                    console.log("Clicked:", q.text)
+                                                    handleSuggestedQuestion(q.text)
+                                                }}
                                             >
                                                 {q.text}
                                             </Button>
