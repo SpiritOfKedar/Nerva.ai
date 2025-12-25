@@ -193,3 +193,12 @@
 {"level":"info","message":"Received message for session new from user 694ce2e9a64ff41135566c33","timestamp":"2025-12-25T07:38:51.771Z"}
 {"level":"info","message":"Received message for session new from user 694ce2e9a64ff41135566c33","timestamp":"2025-12-25T07:40:28.875Z"}
 {"level":"info","message":"Received message for session new from user 694ce2e9a64ff41135566c33","timestamp":"2025-12-25T07:50:30.956Z"}
+{"level":"info","message":"connected to mongodb atlas","timestamp":"2025-12-25T08:12:19.652Z"}
+{"level":"info","message":"Server is running on PORT 3001","timestamp":"2025-12-25T08:12:19.657Z"}
+{"level":"info","message":"inngest endpoint available at http://localhost:3001/api/inngest","timestamp":"2025-12-25T08:12:19.658Z"}
+{"level":"info","message":"connected to mongodb atlas","timestamp":"2025-12-25T08:14:31.890Z"}
+{"level":"info","message":"Server is running on PORT 3001","timestamp":"2025-12-25T08:14:31.895Z"}
+{"level":"info","message":"inngest endpoint available at http://localhost:3001/api/inngest","timestamp":"2025-12-25T08:14:31.896Z"}
+{"level":"info","message":"connected to mongodb atlas","timestamp":"2025-12-25T08:14:44.862Z"}
+{"level":"info","message":"Server is running on PORT 3001","timestamp":"2025-12-25T08:14:44.866Z"}
+{"level":"info","message":"inngest endpoint available at http://localhost:3001/api/inngest","timestamp":"2025-12-25T08:14:44.866Z"}
