@@ -18,7 +18,8 @@ import { generalRateLimiter, authRateLimiter, chatRateLimiter } from "./middlewa
 // Configure allowed origins
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [
     "http://localhost:3002",
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "https://nerva-ai-frontend.vercel.app"
 ];
 
 //middlewares
